@@ -1,0 +1,17 @@
+body {
+    font-family: 'Trebuchet MS';
+    margin:0px
+}
+svg{
+    width: 960px;
+    height: 500px;
+}
+
+.lines{
+    stroke: black;
+}
+
+.lines path{
+    stroke-linejoin: round;
+}
+

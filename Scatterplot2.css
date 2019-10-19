@@ -1,0 +1,26 @@
+circle {
+    fill: purple;
+    opacity: 0.5;
+}
+
+text {
+    font-size:2em;
+    font-family:'Trebuchet MS';
+}
+.tick text{
+    fill:#635F5D
+}
+
+.tick line{
+    stroke:#C0C0BB
+}
+
+.axis-label{
+    font-size:2em;
+    fill: #8e8883;
+}
+
+.title{
+    font-size:2em;
+    fill: #635F5D;
+}
