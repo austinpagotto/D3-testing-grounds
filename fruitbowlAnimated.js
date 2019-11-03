@@ -28,6 +28,7 @@ const fruitBowl = (selection,{fruits}) => {
     groupsEnter.append('circle')
     .merge(groups.select('circle'))
       .attr('fill',d => colorScale(d.type))
+      .on('click',d => onClick(d.id))
     .transition().duration(1000)
       .attr('r',d => radiusScale(d.type))
       .attr('cx',0);

@@ -1,0 +1,17 @@
+/* body{
+   
+} */
+
+.sphere{
+    fill:dodgerblue;
+}
+
+.country {
+    fill: purple;
+    stroke: beige;
+    stroke-width: 0.1px;
+}
+
+.country:hover{
+    fill: fuchsia;
+}
