@@ -1,57 +1,70 @@
 function whenLoaded() {
-  const svg = d3.select("svg");
+const svg = d3.select('svg');
+
+const projection = d3.geoNaturalEarth1();
+const pathGenerator = d3.geoPath().projection(projection);
+const radiusScale = d3.scaleSqrt()
+const radiusValue = d => d.properties['2018']
+
+const g = svg.append('g');
+
+const colorLegendG = svg.append('g')
+    .attr('transform', `translate(40,310)`);
+
+g.append('path')
+    .attr('class', 'sphere')
+    .attr('d', pathGenerator({type: 'Sphere'}));
+
+svg.call(d3.zoom().on('zoom', () => {
+  g.attr('transform', d3.event.transform);
+}));
+
+const populationFormat = d3.format(',');
+
+loadAndProcessData().then(countries => {
+  const sizeScale = d3.scaleSqrt()
+  .domain([0,d3.max(countries.features,radiusValue)])
+  .range([0,20])
 
 
-  const choroplethMapG = svg.append("g");
 
-  const colorLegendG = svg.append("g").attr("transform", `translate(30,300)`);
+  g.selectAll('path').data(countries.features)
+    .enter().append('path')
+      .attr('class', 'country')
+      .attr('d', pathGenerator)
+      .attr('fill', d => d.properties['2018'] ? 'grey' : 'red')
+    .append('title')
+      .text(d => isNaN(radiusValue(d)) ? 'Missing': [
+        d.properties['Region, subregion, country or area *'],
+        populationFormat(radiusValue(d))
+      ].join(': ') );
 
+      countries.featuresWithPopulation.forEach(d => {
+        d.properties.projected = projection(d3.geoCentroid(d));
+      })
 
+      g.selectAll('circle').data(countries.featuresWithPopulation)
+      .enter().append('circle')
+        .attr('class', 'country-circle')
+        .attr('cx',d => d.properties.projected[0])
+        .attr('cy',d => d.properties.projected[1])
+        .attr('r',d => sizeScale(radiusValue(d)));
 
-  const colorScale = d3.scaleOrdinal(d3.schemeSpectral[7]);
-  const colorValue = d => d.properties.economy;
-
-  let selectedColorValue;
-  let features;
-
-  const onClick = d => {
-    selectedColorValue = d;
-    render();
-  };
-
-  loadAndProcessData().then(countries => {
-    features = countries.features;
-    render();
-  });
-
-  const render = () => {
-    colorScale
-      .domain(features.map(colorValue))
-      .domain(
-        colorScale
-          .domain()
-          .sort()
-          .reverse()
-      )
-      .range(d3.schemeSpectral[colorScale.domain().length]);
-
-    colorLegendG.call(colorLegend, {
-      colorScale,
-      circleRadius: 10,
-      spacing: 30,
-      textOffset: 13,
-      backgroundRectWidth: 250,
-      onClick,
-      selectedColorValue
-    });
-
-   choroplethMapG.call(choroplethMap,{
-       features,
-       colorScale,
-       colorValue,
-       selectedColorValue
-   })
-  };
+        g.append('g')
+        .attr('transform',`translate(115,100)`)
+        .call(sizeLegend,{
+          sizeScale,
+          spacing:50,
+          textOffset:10,
+          numTicks:5,
+          tickFormat:populationFormat
+        })
+        .append('text')
+        .text('population')
+        .attr('y',-50)
+        .attr('class','legend-title')
+  
+});
 }
 
 window.onload = whenLoaded;

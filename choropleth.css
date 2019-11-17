@@ -4,7 +4,7 @@ body {
   }
   
   .sphere {
-    fill: #4242e4;
+    fill: #c9c9dd;
   }
   
   .country {
@@ -16,7 +16,7 @@ body {
   }
   
   .country:hover {
-    fill: red;
+    fill: dodgerblue;
   }
 
   .tick {
@@ -29,7 +29,17 @@ body {
     font-family: sans-serif;
   }
   
-  .tick circle {
+  .tick circle, .country-circle {
+    fill: dodgerblue;
+    fill-opacity: 0.5;
     stroke: black;
     stroke-opacity: 0.5;
+    pointer-events:none;
   }
+
+  .legend-title{
+    font-size: 2em;
+    fill: black;
+    font-family: sans-serif;
+  }
+
